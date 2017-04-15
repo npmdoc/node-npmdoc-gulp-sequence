@@ -1,11 +1,13 @@
 # api documentation for  [gulp-sequence (v0.4.6)](https://github.com/teambition/gulp-sequence)  [![npm package](https://img.shields.io/npm/v/npmdoc-gulp-sequence.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-gulp-sequence) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-gulp-sequence.svg)](https://travis-ci.org/npmdoc/node-npmdoc-gulp-sequence)
 #### Run a series of gulp tasks in order.
 
-[![NPM](https://nodei.co/npm/gulp-sequence.png?downloads=true)](https://www.npmjs.com/package/gulp-sequence)
+[![NPM](https://nodei.co/npm/gulp-sequence.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/gulp-sequence)
 
-[![apidoc](https://npmdoc.github.io/node-npmdoc-gulp-sequence/build/screen-capture.buildNpmdoc.browser._2Fhome_2Ftravis_2Fbuild_2Fnpmdoc_2Fnode-npmdoc-gulp-sequence_2Ftmp_2Fbuild_2Fapidoc.html.png)](https://npmdoc.github.io/node-npmdoc-gulp-sequence/build..beta..travis-ci.org/apidoc.html)
+[![apidoc](https://npmdoc.github.io/node-npmdoc-gulp-sequence/build/screenCapture.buildCi.browser.apidoc.html.png)](https://npmdoc.github.io/node-npmdoc-gulp-sequence/build/apidoc.html)
 
-![package-listing](https://npmdoc.github.io/node-npmdoc-gulp-sequence/build/screen-capture.npmPackageListing.svg)
+![npmPackageListing](https://npmdoc.github.io/node-npmdoc-gulp-sequence/build/screenCapture.npmPackageListing.svg)
+
+![npmPackageDependencyTree](https://npmdoc.github.io/node-npmdoc-gulp-sequence/build/screenCapture.npmPackageDependencyTree.svg)
 
 
 
@@ -50,13 +52,11 @@
     "main": "index.js",
     "maintainers": [
         {
-            "name": "zensh",
-            "email": "admin@zensh.com"
+            "name": "zensh"
         }
     ],
     "name": "gulp-sequence",
     "optionalDependencies": {},
-    "readme": "ERROR: No README data found!",
     "repository": {
         "type": "git",
         "url": "git+ssh://git@github.com/teambition/gulp-sequence.git"
@@ -73,11 +73,90 @@
 # <a name="apidoc.tableOfContents"></a>[table of contents](#apidoc.tableOfContents)
 
 #### [module gulp-sequence](#apidoc.module.gulp-sequence)
+1.  [function <span class="apidocSignatureSpan"></span>gulp-sequence ()](#apidoc.element.gulp-sequence.gulp-sequence)
+1.  [function <span class="apidocSignatureSpan">gulp-sequence.</span>toString ()](#apidoc.element.gulp-sequence.toString)
 1.  [function <span class="apidocSignatureSpan">gulp-sequence.</span>use (gulp)](#apidoc.element.gulp-sequence.use)
 
 
 
 # <a name="apidoc.module.gulp-sequence"></a>[module gulp-sequence](#apidoc.module.gulp-sequence)
+
+#### <a name="apidoc.element.gulp-sequence.gulp-sequence"></a>[function <span class="apidocSignatureSpan"></span>gulp-sequence ()](#apidoc.element.gulp-sequence.gulp-sequence)
+- description and source-code
+```javascript
+function gulpSequence() {
+  if (!gulp) gulp = require('gulp')
+
+  var BREAKER = {}
+  var args = slice.call(arguments)
+  var done = args[args.length - 1]
+
+  if (typeof done === 'function') args.pop()
+  else done = null
+
+  if (!args.length) {
+    throw new gutil.PluginError(packageName, 'No tasks were provided to gulp-sequence!')
+  }
+
+  var runSequence = thunk.seq(args.filter(function (taskName) {
+    // filter falsely taskName
+    return taskName
+  }).map(function (task) {
+    return function (callback) {
+      if (!Array.isArray(task)) task = [task]
+
+      function successListener (e) {
+        var index = task.indexOf(e.task)
+        if (index < 0) return
+        task[index] = BREAKER
+        for (var i = 0; i < task.length; i++) {
+          if (task[i] !== BREAKER) return
+        }
+        removeListener()
+        callback()
+      }
+
+      function errorListener (e) {
+        if (!e.err || task.indexOf(e.task) < 0) return
+        removeListener()
+        callback(e.err)
+      }
+
+      function removeListener () {
+        gulp.removeListener('task_stop', successListener)
+          .removeListener('task_not_found', errorListener)
+          .removeListener('task_recursion', errorListener)
+          .removeListener('task_err', errorListener)
+      }
+
+      gulp
+        .on('task_stop', successListener)
+        .on('task_not_found', errorListener)
+        .on('task_recursion', errorListener)
+        .on('task_err', errorListener)
+        .start(task.slice())
+    }
+  }))
+
+  return done ? runSequence(done) : runSequence
+}
+```
+- example usage
+```shell
+n/a
+```
+
+#### <a name="apidoc.element.gulp-sequence.toString"></a>[function <span class="apidocSignatureSpan">gulp-sequence.</span>toString ()](#apidoc.element.gulp-sequence.toString)
+- description and source-code
+```javascript
+toString = function () {
+    return toString;
+}
+```
+- example usage
+```shell
+n/a
+```
 
 #### <a name="apidoc.element.gulp-sequence.use"></a>[function <span class="apidocSignatureSpan">gulp-sequence.</span>use (gulp)](#apidoc.element.gulp-sequence.use)
 - description and source-code
