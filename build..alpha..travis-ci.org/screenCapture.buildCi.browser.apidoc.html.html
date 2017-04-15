@@ -1,4 +1,4 @@
-<div class="apidocDiv">
+<html><head></head><body><div class="apidocDiv">
 <style>
 /*csslint
 */
@@ -47,17 +47,10 @@
 }
 </style>
 <h1>api documentation for
-    <a
-
-        href="https://github.com/teambition/gulp-sequence"
-
-    >gulp-sequence (v0.4.6)</a>
+    <a href="https://github.com/teambition/gulp-sequence">gulp-sequence (v0.4.6)</a>
 </h1>
 <h4>Run a series of gulp tasks in order.</h4>
-<div class="apidocSectionDiv"><a
-    href="#apidoc.tableOfContents"
-    id="apidoc.tableOfContents"
-><h1>table of contents</h1></a><ol>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
 
     <li class="apidocModuleLi"><a href="#apidoc.module.gulp-sequence">module gulp-sequence</a><ol>
 
@@ -104,17 +97,17 @@
     </h2>
     <ul>
     <li>description and source-code<pre class="apidocCodePre">function gulpSequence() {
-  if (!gulp) gulp = require(&#x27;gulp&#x27;)
+  if (!gulp) gulp = require('gulp')
 
   var BREAKER = {}
   var args = slice.call(arguments)
   var done = args[args.length - 1]
 
-  if (typeof done === &#x27;function&#x27;) args.pop()
+  if (typeof done === 'function') args.pop()
   else done = null
 
   if (!args.length) {
-    throw new gutil.PluginError(packageName, &#x27;No tasks were provided to gulp-sequence!&#x27;)
+    throw new gutil.PluginError(packageName, 'No tasks were provided to gulp-sequence!')
   }
 
   var runSequence = thunk.seq(args.filter(function (taskName) {
@@ -126,9 +119,9 @@
 
       function successListener (e) {
         var index = task.indexOf(e.task)
-        if (index &#x3c; 0) return
+        if (index &lt; 0) return
         task[index] = BREAKER
-        for (var i = 0; i &#x3c; task.length; i++) {
+        for (var i = 0; i &lt; task.length; i++) {
           if (task[i] !== BREAKER) return
         }
         removeListener()
@@ -136,23 +129,23 @@
       }
 
       function errorListener (e) {
-        if (!e.err || task.indexOf(e.task) &#x3c; 0) return
+        if (!e.err || task.indexOf(e.task) &lt; 0) return
         removeListener()
         callback(e.err)
       }
 
       function removeListener () {
-        gulp.removeListener(&#x27;task_stop&#x27;, successListener)
-          .removeListener(&#x27;task_not_found&#x27;, errorListener)
-          .removeListener(&#x27;task_recursion&#x27;, errorListener)
-          .removeListener(&#x27;task_err&#x27;, errorListener)
+        gulp.removeListener('task_stop', successListener)
+          .removeListener('task_not_found', errorListener)
+          .removeListener('task_recursion', errorListener)
+          .removeListener('task_err', errorListener)
       }
 
       gulp
-        .on(&#x27;task_stop&#x27;, successListener)
-        .on(&#x27;task_not_found&#x27;, errorListener)
-        .on(&#x27;task_recursion&#x27;, errorListener)
-        .on(&#x27;task_err&#x27;, errorListener)
+        .on('task_stop', successListener)
+        .on('task_not_found', errorListener)
+        .on('task_recursion', errorListener)
+        .on('task_err', errorListener)
         .start(task.slice())
     }
   }))
@@ -191,22 +184,22 @@
 }</pre></li>
     <li>example usage<pre class="apidocCodePre">...
 ```js
-var gulp = require(&#x27;gulp&#x27;)
-var gulpSequence = require(&#x27;gulp-sequence&#x27;)
+var gulp = require('gulp')
+var gulpSequence = require('gulp-sequence')
 
-gulp.task(&#x27;test&#x27;, gulpSequence([&#x27;a&#x27;, &#x27;b&#x27;], &#x27;c&#x27;, [&#x27;d&#x27;, &#x27;e&#x27;], &#x27;f&#
+gulp.task('test', gulpSequence(['a', 'b'], 'c', ['d', 'e'], 'f&amp;#
 x27;))
 ```
 
 ### gulpSequence.<span class="apidocCodeKeywordSpan">use</span>(gulp)
-return a new gulpSequence function with the gulp. If you have some errors such as &#x22;task xxx is not defined&#x22;, this will
+return a new gulpSequence function with the gulp. If you have some errors such as "task xxx is not defined", this will
  resolve it.
 
 ```js
-var gulp = require(&#x27;gulp&#x27;)
-var gulpSequence = require(&#x27;gulp-sequence&#x27;).use(gulp)
+var gulp = require('gulp')
+var gulpSequence = require('gulp-sequence').use(gulp)
 
-gulp.task(&#x27;test&#x27;, gulpSequence([&#x27;a&#x27;, &#x27;b&#x27;], &#x27;c&#x27;, [&#x27;d&#x27;, &#x27;e&#x27;], &#x27;f&#
+gulp.task('test', gulpSequence(['a', 'b'], 'c', ['d', 'e'], 'f&amp;#
 x27;))
 ...</pre></li>
     </ul>
@@ -220,3 +213,4 @@ x27;))
     ]
 </div>
 </div>
+</body></html>
